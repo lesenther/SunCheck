@@ -6,6 +6,10 @@ html {
     line-height: 1.4;
 }
 
+body {
+    background: rgb(100,160,240);
+}
+
 ::-moz-selection {
     background: #b3d4fc;
     text-shadow: none;
@@ -56,10 +60,32 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+header {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
 
+header h1 {
+    font-size: 32px;
+    margin: 0;
+}
 
+header span {
+    font-size: 14px;
+}
 
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    text-align: center;
+    width: 100%;
+}
 
+section#content {
+    margin-top: 80px;
+}
 
 
 
