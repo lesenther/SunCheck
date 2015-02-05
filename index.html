@@ -9,6 +9,7 @@
 
     <link rel="stylesheet" href="css/normalize.min.css">
     <link rel="stylesheet" href="css/main.css">
+    <link href='http://fonts.googleapis.com/css?family=Shadows+Into+Light' rel='stylesheet' type='text/css'>
 
     <script src="js/vendor/modernizr-2.8.3.min.js"></script>
   </head>
@@ -19,7 +20,23 @@
     </header>
 
     <section id="content">
-      <p>bleh</p>
+      <strong>Current conditions in {{Oakland, CA}}</strong>
+      <ul>
+        <li>Current Temperature: <strong>82 &deg;F</strong></li>
+        <li>Todays High: <strong>85 &deg;F</strong></li>
+        <li>Todays Low: <strong>65 &deg;F</strong></li>
+        <li>...</li>
+      </ul>
+
+      <hr />
+
+      <strong>Stats from {{dateStart}} to {{dateEnd }} in {{locationQuery}}:</strong>
+      <ul>
+        <li>Sunny Days in range: <strong>82%</strong></li>
+        <li>Temperature Map:  <div id="temperatureMap"></div></li>
+        <li>Rainfall Map:  <div id="rainFallMap"></div></li>
+        <li>...</li>
+      </ul>
     </section>
 
     <footer>

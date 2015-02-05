@@ -64,30 +64,39 @@ header {
     position: fixed;
     top: 10px;
     right: 10px;
+    text-align: right;
 }
 
 header h1 {
-    font-size: 32px;
+    font-size: 36px;
     margin: 0;
+    font-family: "Shadows Into Light", script;
 }
 
 header span {
-    font-size: 14px;
+    font-size: 12px;
+    color: #333;
 }
 
 footer {
     position: fixed;
     left: 0;
-    bottom: 0;
+bottom: 0;
     text-align: center;
     width: 100%;
 }
 
 section#content {
     margin-top: 80px;
+    padding: 20px;
 }
 
-
+div#rainFallMap, div#temperatureMap {
+    display: inline-block;
+    width: 200px;
+    height: 10px;
+    outline: 1px solid black;
+}
 
 
 
