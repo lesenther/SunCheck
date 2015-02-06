@@ -4,10 +4,11 @@ html {
     color: #222;
     font-size: 1em;
     line-height: 1.4;
+    font-family: "Century Gothic",CenturyGothic,AppleGothic,'Avant Garde',Avantgarde,sans-serif;
 }
 
 body {
-    background: rgb(100,160,240);
+    background-color: #aaccff;
 }
 
 ::-moz-selection {
@@ -61,10 +62,6 @@ textarea {
    ========================================================================== */
 
 header {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    text-align: right;
 }
 
 header h1 {
@@ -81,13 +78,20 @@ header span {
 footer {
     position: fixed;
     left: 0;
-bottom: 0;
-    text-align: center;
+    bottom: 0;
     width: 100%;
 }
 
+#container {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
 section#content {
-    margin-top: 80px;
+    display: inline-block;
     padding: 20px;
 }
 
@@ -108,13 +112,16 @@ div#mask {
     background: rgba(255, 255, 255, 0.9);
 }
 
+div#container table,
 div#mask table {
   height: 100%;
   width: 100%;
 }
 
+div#container table tr td,
 div#mask table tr td {
   vertical-align: middle;
+  text-align: center;
 }
 
 div#mask div#notice {
@@ -147,6 +154,7 @@ span.load {
 
 #results {
     margin: 20px;
+    text-align: left;
 }
 
 input#locationQuery {
@@ -156,7 +164,37 @@ input#locationQuery {
     padding: 4px 6px;
 }
 
+input[type="submit"],
+button {
+  background: #3498db;
+  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+  background-image: -o-linear-gradient(top, #3498db, #2980b9);
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  border-width: 1px;
+  outline: 0;
+  -webkit-border-radius: 4;
+  -moz-border-radius: 4;
+  border-radius: 4px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 16px;
+  padding: 4px 4px;
+  text-decoration: none;
+}
 
+
+input[type="submit"]:hover,
+button:hover {
+  background: #3cb0fd;
+  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  text-decoration: none;
+}
 
 
 /* ==========================================================================

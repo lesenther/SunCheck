@@ -68,7 +68,7 @@ function getUserLocation(){
  * @return {[type]}     [description]
  */
 function getCurrentWeather(lat, lng){
-  if(!lat || !lng){
+  if (!lat || !lng){
     alertUser('Bad input parameters');
     return;
   }
@@ -89,13 +89,41 @@ function getCurrentWeather(lat, lng){
       '<strong>Weather right now in ' + msg.location_query + ':</strong>' +
       '<ul>' +
         '<li>Conditions:  <strong>' + msg.summary + '</strong></li>' +
-        '<li>Apparent Temperature: <strong>' + msg.temp_apparent + '</strong></li>' +
-        //'<li>Todays High: <strong>' + msg.temp_max + ' &deg;F</strong></li>' +
-        //'<li>Todays Low: <strong>' + msg.temp_min + ' &deg;F</strong></li>' +
-      '</ul>';
+        '<li>Temperature: <strong>' + msg.temp_current + ' &deg; F</strong></li>' +
+      '</ul>' +
+      '<button onclick="getHistorialWeather();">Get Historical Data</button>';
   });
 }
 
+
+/**
+ * Gets weather data for a specified location across a range of dates
+ *
+ * @param  {[type]} lat [description]
+ * @param  {[type]} lng [description]
+ * @return {[type]}     [description]
+ */
+function getHistorialWeather(lat, lng){
+  var dateStart = '', dateEnd = '';
+  while(!isValidDate(dateStart)){
+    dateStart = Date.parse(prompt('Start date:  ', 'MM/DD/YYYY'));
+  }
+  if (dateStart=='')
+    return;
+  while(!isValidDate(dateEnd)){
+    dateEnd = Date.parse(prompt('End date:  ', 'MM/DD/YYYY'));
+  }
+  if (dateEnd=='')
+    return;
+  document.getElementById('results').innerHTML =
+    '<strong>Stats from ' + dateStart + ' to ' + dateEnd + ' in ' + document.getElementById('locationQuery').value + ':</strong>' +
+    '<ul>' +
+      '<li>Sunny Days in range: <strong>82%</strong></li>' +
+      '<li>Temperature Map:  <div id="temperatureMap"></div></li>' +
+      '<li>Rainfall Map:  <div id="rainFallMap"></div></li>' +
+      '<li>...</li>' +
+    '</ul>';
+}
 
 /**
  * Use Google geocoding to get coordinates from users query
@@ -104,8 +132,8 @@ function getCurrentWeather(lat, lng){
  * @return {[type]}               [description]
  */
 function findCoordsForLocation(locationQuery){
-  if(!locationQuery){
-    alertUser('Bad input parameter:  ' + locationQuery);
+  if (!locationQuery){
+    alertUser('<strong>Error:</strong> Bad input parameter:  ' + locationQuery);
     return;
   }
   alertUser('<span class="load"></span>Getting location coordinates', 99999);
@@ -118,14 +146,28 @@ function findCoordsForLocation(locationQuery){
     dataType: "json"
   }).done(function(msg){
     document.getElementById('mask').style.display = 'none';
-    if(msg.status == 'OK'){
+    if (msg.status == 'OK'){
       document.getElementById('locationQuery').value = msg.results[0].formatted_address;
       getCurrentWeather(msg.results[0].geometry.location.lat,msg.results[0].geometry.location.lng)
     }else{
-      alertUser('Location could not be determined from query:  <em>' + locationQuery + '</em>');
+      alertUser('<strong>Error:</strong> Location not found:  <em>' + locationQuery + '</em>');
     }
   });
+}
 
+
+/**
+ * Checks for valid date object
+ *
+ * Jacked from:  http://stackoverflow.com/questions/1353684/detecting-an-invalid-date-date-instance-in-javascript
+ *
+ * @param  {[type]}  d [description]
+ * @return {Boolean}   [description]
+ */
+function isValidDate(d) {
+  if ( Object.prototype.toString.call(d) !== "[object Date]" )
+    return false;
+  return !isNaN(d.getTime());
 }
 
 

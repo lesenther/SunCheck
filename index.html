@@ -15,43 +15,29 @@
   </head>
 
   <body onload="initialize();">
-    <header>
-      <h1>SunCheck</h1>
-      <span>Simple weather analytics</span>
-    </header>
 
-    <section id="content">
+    <div id="container">
+      <table><tr><td>
+        <header>
+          <h1>SunCheck</h1>
+          <p>Simple weather analytics</p>
+        </header>
+        <section id="content">
+          <input type="text" value="" id="locationQuery" placeholder="Enter location" onkeydown="if(event.keyCode==13){findCoordsForLocation(document.getElementById('locationQuery').value);}">
+          <input type="submit" onclick="findCoordsForLocation(document.getElementById('locationQuery').value);return false;" value="Get Weather">
+          <div id="results"></div>
+        </section>
 
-      <label>Search: </label>
-      <input type="text" value="" id="locationQuery" placeholder="Enter location" onkeydown="if(event.keyCode==13){findCoordsForLocation(document.getElementById('locationQuery').value);}">
-      <input type="submit" onclick="findCoordsForLocation(document.getElementById('locationQuery').value);return false;" value="Get Weather">
-
-      <br>
-
-      <div id="results"></div>
-
-
-      <strong>Stats from {{dateStart}} to {{dateEnd }} in {{locationQuery}}:</strong>
-      <ul>
-        <li>Sunny Days in range: <strong>82%</strong></li>
-        <li>Temperature Map:  <div id="temperatureMap"></div></li>
-        <li>Rainfall Map:  <div id="rainFallMap"></div></li>
-        <li>...</li>
-      </ul>
-    </section>
-
-    <footer>
-      footer
-    </footer>
+        <footer>
+          Powered by <a href="//forecast.io" target="_blank">Forecast.io</a>
+        </footer>
+      </td></tr></table>
+    </div>
 
     <div id="mask">
-      <table>
-        <tr>
-          <td>
-            <div id="notice"></div>
-          </td>
-        </tr>
-      </table>
+      <table><tr><td>
+        <div id="notice"></div>
+      </td></tr></table>
       <span class="close" onclick="document.getElementById('mask').style.display='none';">&times;</span>
     </div>
 

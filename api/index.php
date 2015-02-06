@@ -34,6 +34,7 @@ switch ($request) {
     $condition = $forecast->getCurrentConditions($latitude, $longitude, $units, $lang);
     echo json_encode(
       array(
+        'temp_current' => $condition->getTemperature(),
         'location_query' => $locationQuery,
         'temp_apparent' => $condition->getApparentTemperature(),
         'cloud_cover' => $condition->getCloudCover(),
