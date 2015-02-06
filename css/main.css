@@ -98,6 +98,15 @@ div#rainFallMap, div#temperatureMap {
     outline: 1px solid black;
 }
 
+div#mask {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    display: none;
+    background: rgba(255, 255, 255, 0.9);
+}
 
 
 
