@@ -23,20 +23,12 @@
     <section id="content">
 
       <label>Search: </label><input type="text" value="" id="locationQuery" placeholder="Enter location">
+      <button onclick="findCoordsForLocation(document.getElementById('locationQuery').value);return false;">Get Weather</button>
 
       <br>
 
-      <h2>Results</h2>
+      <div id="results"></div>
 
-      <strong>Current conditions in {{locationQuery}}:</strong>
-      <ul>
-        <li>Current Temperature: <strong>82 &deg;F</strong></li>
-        <li>Todays High: <strong>85 &deg;F</strong></li>
-        <li>Todays Low: <strong>65 &deg;F</strong></li>
-        <li>...</li>
-      </ul>
-
-      <hr />
 
       <strong>Stats from {{dateStart}} to {{dateEnd }} in {{locationQuery}}:</strong>
       <ul>
@@ -59,9 +51,11 @@
           </td>
         </tr>
       </table>
+      <span class="close" onclick="document.getElementById('mask').style.display='none';">&times;</span>
     </div>
 
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="js/main.js"></script>
 
   </body>

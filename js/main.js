@@ -1,4 +1,3 @@
-
 /**
  * Initialize the weather app
  *  - Try to get users location and show current weather data
@@ -8,6 +7,7 @@
 function initialize(){
   getUserLocation();
 }
+
 
 /**
  * Attempt to determine users location using h5 geolocation
@@ -26,14 +26,12 @@ function getUserLocation(){
     alertUser('<span class="load"></span>Trying to determine your location..', 99999);
     var geocoder = new google.maps.Geocoder();
     navigator.geolocation.getCurrentPosition(function(pos){
-      //alert("determined your position to be " + pos.coords.latitude + ", " + pos.coords.longitude);
-      // Have lat + long, need to make user friendly, like city, state
       var latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
       geocoder.geocode({'latLng': latlng}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
           if (results[0]) {
-            city = 'unknown';
-            state = 'unknown';
+            var city = 'unknown';
+            var state = 'unknown';
              var arrAddress = results[0].address_components;
               for (ac = 0; ac < arrAddress.length; ac++) {
                 if (arrAddress[ac].types[0] == "locality") { city = arrAddress[ac].long_name }
@@ -41,19 +39,19 @@ function getUserLocation(){
               }
             document.getElementById('locationQuery').value = city + ', ' + state;
             document.getElementById('mask').style.display = 'none';
-            getCurrentWeather();
+            getCurrentWeather(pos.coords.latitude,pos.coords.longitude);
           } else {
-            alertUser("No results found", 2000);
+            alertUser("No results found");
             return;
           }
         } else {
-          alertUser("Geocoder failed due to: " + status, 2000);
+          alertUser("Geocoder failed due to: " + status);
           return;
         }
       });
     });
   } else {
-    alertUser('Geolocation is not supported by this browser.', 2000);
+    alertUser('Geolocation is not supported by this browser.');
     document.getElementById('locationQuery').focus();
   }
 }
@@ -70,11 +68,73 @@ function getUserLocation(){
  * @return {[type]}     [description]
  */
 function getCurrentWeather(lat, lng){
-  // Perform ajax request and paste info after
-  //alertUser('i should get the weather now');
+  if(!lat || !lng){
+    alertUser('Bad input parameters');
+    return;
+  }
+  alertUser('<span class="load"></span>Getting weather data', 99999);
+  $.ajax({
+    type: 'GET',
+    url: '/api',
+    data:{
+      request: 'current',
+      locationQuery: document.getElementById('locationQuery').value,
+      latitude: lat,
+      longitude: lng
+    },
+    dataType: "json"
+  }).done(function(msg){
+    document.getElementById('mask').style.display = 'none';
+    document.getElementById('results').innerHTML =
+      '<strong>Current conditions in ' + msg.location_query + ':</strong>' +
+      '<ul>' +
+        '<li>Conditions:  <strong>' + msg.summary + '</strong></li>' +
+        '<li>Apparent Temperature: <strong>' + msg.temp_apparent + '</strong></li>' +
+        //'<li>Todays High: <strong>' + msg.temp_max + ' &deg;F</strong></li>' +
+        //'<li>Todays Low: <strong>' + msg.temp_min + ' &deg;F</strong></li>' +
+      '</ul>';
+  });
 }
 
 
+/**
+ * Use Google geocoding to get coordinates from users query
+ *
+ * @param  {[type]} locationQuery [description]
+ * @return {[type]}               [description]
+ */
+function findCoordsForLocation(locationQuery){
+  if(!locationQuery){
+    alertUser('Bad input parameter:  ' + locationQuery);
+    return;
+  }
+  alertUser('<span class="load"></span>Getting location coordinates', 99999);
+  $.ajax({
+    type: 'GET',
+    url: 'https://maps.googleapis.com/maps/api/geocode/json',
+    data:{
+      address: locationQuery
+    },
+    dataType: "json"
+  }).done(function(msg){
+    document.getElementById('mask').style.display = 'none';
+    if(msg.status == 'OK'){
+      getCurrentWeather(msg.results[0].geometry.location.lat,msg.results[0].geometry.location.lng)
+    }else{
+      alertUser('Location could not be determined from query:  <em>' + locationQuery + '</em>');
+    }
+  });
+
+}
+
+
+/**
+ * Informs user whats happening
+ *
+ * @param  {[type]} msg     [description]
+ * @param  {[type]} timeout [description]
+ * @return {[type]}         [description]
+ */
 function alertUser(msg, timeout){
   timeout = (timeout==undefined) ? 2000 : timeout;
   document.getElementById('notice').innerHTML = msg;

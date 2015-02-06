@@ -122,6 +122,18 @@ div#mask div#notice {
   cursor: default;
 }
 
+div#mask span.close {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    color: black;
+    cursor: pointer;
+}
+
 span.load {
   display: inline-block;
   background-image: url('/img/load.gif');
