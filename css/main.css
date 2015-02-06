@@ -145,7 +145,16 @@ span.load {
   margin-top:4px;
 }
 
+#results {
+    margin: 20px;
+}
 
+input#locationQuery {
+    background: rgba(255, 255, 255, 0.4);
+    outline: 0;
+    border: 0;
+    padding: 4px 6px;
+}
 
 
 

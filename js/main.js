@@ -86,7 +86,7 @@ function getCurrentWeather(lat, lng){
   }).done(function(msg){
     document.getElementById('mask').style.display = 'none';
     document.getElementById('results').innerHTML =
-      '<strong>Current conditions in ' + msg.location_query + ':</strong>' +
+      '<strong>Weather right now in ' + msg.location_query + ':</strong>' +
       '<ul>' +
         '<li>Conditions:  <strong>' + msg.summary + '</strong></li>' +
         '<li>Apparent Temperature: <strong>' + msg.temp_apparent + '</strong></li>' +
@@ -119,6 +119,7 @@ function findCoordsForLocation(locationQuery){
   }).done(function(msg){
     document.getElementById('mask').style.display = 'none';
     if(msg.status == 'OK'){
+      document.getElementById('locationQuery').value = msg.results[0].formatted_address;
       getCurrentWeather(msg.results[0].geometry.location.lat,msg.results[0].geometry.location.lng)
     }else{
       alertUser('Location could not be determined from query:  <em>' + locationQuery + '</em>');

@@ -22,8 +22,9 @@
 
     <section id="content">
 
-      <label>Search: </label><input type="text" value="" id="locationQuery" placeholder="Enter location">
-      <button onclick="findCoordsForLocation(document.getElementById('locationQuery').value);return false;">Get Weather</button>
+      <label>Search: </label>
+      <input type="text" value="" id="locationQuery" placeholder="Enter location" onkeydown="if(event.keyCode==13){findCoordsForLocation(document.getElementById('locationQuery').value);}">
+      <input type="submit" onclick="findCoordsForLocation(document.getElementById('locationQuery').value);return false;" value="Get Weather">
 
       <br>
 
