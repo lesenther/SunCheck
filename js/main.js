@@ -32,6 +32,8 @@ function getUserLocation(){
       geocoder.geocode({'latLng': latlng}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
           if (results[0]) {
+            city = 'unknown';
+            state = 'unknown';
              var arrAddress = results[0].address_components;
               for (ac = 0; ac < arrAddress.length; ac++) {
                 if (arrAddress[ac].types[0] == "locality") { city = arrAddress[ac].long_name }
@@ -60,6 +62,8 @@ function getUserLocation(){
 /**
  * Gets current weather for a location
  * - Use forecast.io api
+ *
+ * - Needs latitude and longitude!
  *
  * @param  {[type]} lat Latitude
  * @param  {[type]} lng Longitude
