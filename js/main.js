@@ -23,6 +23,7 @@ function initialize(){
  */
 function getUserLocation(){
   if (navigator.geolocation) {
+    // Inform user since this step takes time to process
     var geocoder = new google.maps.Geocoder();
     navigator.geolocation.getCurrentPosition(function(pos){
       //alert("determined your position to be " + pos.coords.latitude + ", " + pos.coords.longitude);
@@ -31,8 +32,12 @@ function getUserLocation(){
       geocoder.geocode({'latLng': latlng}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
           if (results[0]) {
-            console.log(results);
-            document.getElementById('locationQuery').value = '';
+             var arrAddress = results[0].address_components;
+              for (ac = 0; ac < arrAddress.length; ac++) {
+                if (arrAddress[ac].types[0] == "locality") { city = arrAddress[ac].long_name }
+                if (arrAddress[ac].types[0] == "administrative_area_level_1") { state = arrAddress[ac].short_name }
+              }
+            document.getElementById('locationQuery').value = city + ', ' + state;
             getCurrentWeather();
           } else {
             alertUser("No results found", 2000);
@@ -61,4 +66,5 @@ function getUserLocation(){
  */
 function getCurrentWeather(lat, lng){
   // Perform ajax request and paste info after
+  console.log('i should get the weather now');
 }
