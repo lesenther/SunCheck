@@ -108,6 +108,30 @@ div#mask {
     background: rgba(255, 255, 255, 0.9);
 }
 
+div#mask table {
+  height: 100%;
+  width: 100%;
+}
+
+div#mask table tr td {
+  vertical-align: middle;
+}
+
+div#mask div#notice {
+  text-align: center;
+  cursor: default;
+}
+
+span.load {
+  display: inline-block;
+  background-image: url('/img/load.gif');
+  height: 16px;
+  width: 16px;
+  position: relative;
+  top:2px;
+  margin-right: 10px;
+  margin-top:4px;
+}
 
 
 

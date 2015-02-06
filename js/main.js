@@ -23,7 +23,7 @@ function initialize(){
  */
 function getUserLocation(){
   if (navigator.geolocation) {
-    alertUser("Trying to determine your location..", 99999);
+    alertUser('<span class="load"></span>Trying to determine your location..', 99999);
     var geocoder = new google.maps.Geocoder();
     navigator.geolocation.getCurrentPosition(function(pos){
       //alert("determined your position to be " + pos.coords.latitude + ", " + pos.coords.longitude);
@@ -51,7 +51,7 @@ function getUserLocation(){
       });
     });
   } else {
-    alert('Geolocation is not supported by this browser.');
+    alertUser('Geolocation is not supported by this browser.', 2000);
     document.getElementById('locationQuery').focus();
   }
 }
@@ -67,7 +67,7 @@ function getUserLocation(){
  */
 function getCurrentWeather(lat, lng){
   // Perform ajax request and paste info after
-  alertUser('i should get the weather now');
+  //alertUser('i should get the weather now');
 }
 
 
