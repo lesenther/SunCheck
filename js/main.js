@@ -6,6 +6,7 @@ var u = {
   dend: '1-8-2013'
 };
 
+
 /**
  * Initialize the weather app
  *  - Try to get users location and show current weather data
@@ -147,8 +148,7 @@ function getHistorialWeather(){
   u.dend = properDate(dateEnd);
   // After validation, make ajax request
   alertUser('<span class="load"></span>Getting weather data for <em>' +
-    document.getElementById('locationQuery').value + '</em><br>' +
-    '(Depending on the range, this may time some time)', 99999);
+    document.getElementById('locationQuery').value + '</em>', 99999);
   $.ajax({
     type: 'GET',
     url: '/api',
@@ -198,11 +198,6 @@ function findCoordsForLocation(){
   if(document.getElementById('locationQuery').value=='')
     return;
   u.query = document.getElementById('locationQuery').value;
-  if (!u.query){
-    alertUser('<strong>Error:</strong> Bad input parameter <em>' +
-      u.query + '</em>');
-    return;
-  }
   alertUser('<span class="load"></span>Getting coordinates for <em>' +
     u.query + '</em>', 99999);
   $.ajax({
@@ -217,7 +212,9 @@ function findCoordsForLocation(){
     if (data.status == 'OK'){
       u.query = data.results[0].formatted_address;
       document.getElementById('locationQuery').value = u.query;
-      getCurrentWeather()
+      u.lat = data.results[0].geometry.location.lat;
+      u.lng = data.results[0].geometry.location.lng;
+      getCurrentWeather();
     }else{
       alertUser('<strong>Error:</strong> Location not found <em>' +
         u.query + '</em>');

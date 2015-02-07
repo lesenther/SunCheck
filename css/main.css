@@ -87,6 +87,7 @@ footer {
     left: 0;
     bottom: 0;
     width: 100%;
+    font-size: 12px;
 }
 
 section#content {
@@ -119,7 +120,6 @@ section#content {
 #results ul li {
     clear: right;
     margin-bottom: 4px;
-    border-bottom: 1px solid #cef;
 }
 
 #results ul li.temp {
@@ -127,9 +127,6 @@ section#content {
     position: absolute;
     right: 0;
     top: 0;
-    border: 0;
-    background-color: #bdf;
-    padding: 10px 20px;
 }
 
 #results ul li img {

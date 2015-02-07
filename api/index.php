@@ -46,20 +46,19 @@ switch ($request) {
     $daysSunny=0;
     foreach($dateRange as $date){
       if($dayCount>=30){
-        $error = '30 day span limit';
+        $error = '30 day limit';
         break;
       }
       $weather = json_decode(file_get_contents('https://api.forecast.io/forecast/'.$apiKey.'/'.$latitude.','.$longitude.','.$date->getTimestamp().'?units=us&lang=en&exclude=minutely,hourly,currently'));
       $dailyWeather = $weather->daily->data[0];
-      if($dailyWeather->icon=='clear-day'){
-        $daysSunny++;
-      }
-      $dayCount++;
+      $daysSunny = ($dailyWeather->icon=='clear-day') ? $daysSunny + 1 : $daysSunny;
       $averageTemperature = $dailyWeather->temperatureMin + ($dailyWeather->temperatureMax - $dailyWeather->temperatureMin)/2;
+
       $temps[$dayCount] = round($averageTemperature);
-      $temps_min[$dayCount] = $dailyWeather->temperatureMin;
-      $temps_max[$dayCount] = $dailyWeather->temperatureMax;
-      $rain[$dayCount] = ($dailyWeather->icon=='rain') ? 1 : 0;
+      $x_axis[$dayCount] = $date->format('m/d');
+      $rain[$dayCount] = ($dailyWeather->icon=='rain') ? 100 : 0;
+
+      $dayCount++;
     }
     $percentSunny = number_format($daysSunny/$dayCount*100).'%';
 
@@ -69,8 +68,26 @@ switch ($request) {
         'total_days' => $dayCount,
         'average_temperature' => $averageTemperature,
         'percent_sunny' => $percentSunny,
-        'temp_map' => 'http://chart.googleapis.com/chart?cht=lc&chs=400x100&chd=t:'.implode(',', $temps).'|'.implode(',', $temps_min).'|'.implode(',', $temps_max).'&chxt=y&chxr=0,'.min($temps).','.max($temps).''.'&chf=bg,s,FFFFFF00&chco=3366CC&chma=30,0,0,0',
-        'rain_map' => 'http://chart.googleapis.com/chart?cht=bvg:nda&chs=400x30&chd=t:'.implode(',', $rain).'&chf=bg,s,FFFFFF00&chco=3366CC|6688FF|0033AA&chma=30,0,0,0',
+        'temp_map' => 'http://chart.googleapis.com/chart'.
+          '?cht=lc'. // Line chart
+          '&chs=400x100'. // Size
+          '&chd=t:'.implode(',', $temps). // data
+          '&chxt=y'. // Show y-axis
+          '&chxr=0,'.(min($temps)-2).','.(max($temps)+2). // set y range
+          '&chds='.(min($temps)-2).','.(max($temps)+2).
+          '&chf=bg,s,FFFFFF00'. // transparent back
+          '&chco=6688FF'. // line colors
+          '&chma=30,0,0,0'. // margins
+          '',
+        'rain_map' => 'http://chart.googleapis.com/chart'.
+          '?cht=bvg:nda'. // bar chart
+          '&chs=400x10'. // size
+          '&chd=t:'.implode(',', $rain). // data
+          '&chf=bg,s,FFFFFF00'. // transparent back
+          '&chco=3366CC'. // bar color
+          '&chma=30,0,0,0'. // margins
+          '&chbh=a'. // bar width
+          '',
         'error' => isset($error) ? $error : '',
         'other' => 'bleh'
       )
