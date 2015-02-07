@@ -12,6 +12,7 @@ ini_set('display_errors',1);
 ini_set('display_startup_errors',1);
 error_reporting(-1);
 //*/
+
 $apiKey = '5f0b624e922d6c1082480617cc2a3767';  // Reset key if compromised!!!
 
 $request   = isset($_GET['request'])   ? $_GET['request']   : false;
@@ -43,14 +44,6 @@ switch ($request) {
       new DateTime(urldecode($_GET['dateStart'])) : false;
     $dateEnd   = isset($_GET['dateEnd'])   ?
       new DateTime(urldecode($_GET['dateEnd']))   : false;
-
-    require('lib/helpers.php');
-
-    if (!verifyDate($dateStart) || !verifyDate($dateEnd)) {
-      $error = '';
-    }
-
-
     $dateEnd->modify('+1 day');  // Increment last day before creating range
 
     $dateRange = new DatePeriod(
