@@ -19,12 +19,13 @@
     <div id="container">
       <table><tr><td>
         <header>
+          <img src="/img/logo.png">
           <h1>SunCheck</h1>
-          <p>Simple weather analytics</p>
+          <p>Quick weather analytics</p>
         </header>
         <section id="content">
           <input type="text" value="" id="locationQuery" placeholder="Enter location" onkeydown="if(event.keyCode==13){findCoordsForLocation(document.getElementById('locationQuery').value);}">
-          <input type="submit" onclick="findCoordsForLocation(document.getElementById('locationQuery').value);return false;" value="Get Weather">
+          <input type="submit" onclick="findCoordsForLocation();return false;" value="Check">
           <div id="results"></div>
         </section>
 
@@ -38,7 +39,7 @@
       <table><tr><td>
         <div id="notice"></div>
       </td></tr></table>
-      <span class="close" onclick="document.getElementById('mask').style.display='none';">&times;</span>
+      <span class="close" onclick="hideAlert();">&times;</span>
     </div>
 
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
