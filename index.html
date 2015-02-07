@@ -18,21 +18,24 @@
 
     <div id="container">
       <table><tr><td>
-        <header onclick="alertUser('Developed by Logan Esenther (le@berkeley.edu)',3000);">
+        <header onclick="alertUser('Developed by <em>Logan Esenther</em> ' +
+          '(le@berkeley.edu)',3000);">
           <img src="/img/logo.png">
           <h1>SunCheck</h1>
           <p>Quick weather analytics</p>
         </header>
         <section id="content">
-          <input type="text" value="" id="locationQuery" placeholder="Enter location" onkeydown="if(event.keyCode==13){findCoordsForLocation();}">
+          <input type="text" value="" id="locationQuery"
+            placeholder="Enter location"
+            onkeydown="if(event.keyCode==13){findCoordsForLocation();}">
           <input type="submit" onclick="findCoordsForLocation();" value="Check">
+          <div id="map"></div>
           <div id="results"></div>
         </section>
-
-        <footer>
-          Powered by <a href="//forecast.io" target="_blank">Forecast.io</a>
-        </footer>
       </td></tr></table>
+      <footer>
+        Powered by <a href="//forecast.io" target="_blank">Forecast.io</a>
+      </footer>
     </div>
 
     <div id="mask">

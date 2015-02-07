@@ -2,8 +2,8 @@ var u = {
   query: '',
   lat: '',
   lng: '',
-  dstart: '1/2/13',
-  dend: '1-8-2013'
+  dstart: '1/1/11',
+  dend: '1/11/11'
 };
 
 
@@ -32,14 +32,14 @@ function initialize(){
  * @return {[type]} [description]
  */
 function getUserLocation(){
-  u.query = document.getElementById('locationQuery').value;
   if (navigator.geolocation) {
-    alertUser('<span class="load"></span>Determining your location', 99999);
+    alertUser('<span class="load"></span>Getting your location', 99999);
     var geocoder = new google.maps.Geocoder();
     navigator.geolocation.getCurrentPosition(function(pos){
       u.lat = pos.coords.latitude;
       u.lng = pos.coords.longitude;
       var latlng = new google.maps.LatLng(u.lat, u.lng);
+      // User geocoder to get friendly location name
       geocoder.geocode({'latLng': latlng}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
           if (results[0]) {
@@ -66,12 +66,27 @@ function getUserLocation(){
           return;
         }
       });
+    },function(error){
+      switch(error.code) {
+        case error.PERMISSION_DENIED:
+          alertUser('<strong>Error:</strong> User denied the request for Geolocation.');
+          break;
+        case error.POSITION_UNAVAILABLE:
+          alertUser('<strong>Error:</strong> Location information is unavailable.');
+          break;
+        case error.TIMEOUT:
+          alertUser('<strong>Error:</strong> The request to get user location timed out.');
+          break;
+        case error.UNKNOWN_ERROR:
+          alertUser('<strong>Error:</strong> An unknown error occurred.');
+          break;
+      }
+      document.getElementById('locationQuery').focus();
     });
   } else {
     alertUser('Geolocation is not supported by this browser.');
     document.getElementById('locationQuery').select();
   }
-  return;
 }
 
 
@@ -84,25 +99,28 @@ function getUserLocation(){
  *
  * @return {[type]}     [description]
  */
-function getCurrentWeather(){
-  u.query = document.getElementById('locationQuery').value;
-  if( !u.lat || !u.lng)
+function getCurrentWeather() {
+  if (!u.lat || !u.lng) {
+    alertUser('Location not set!');
     return;
-  alertUser('<span class="load"></span>Getting weather data for <em>' +
+  }
+  alertUser('<span class="load"></span>Getting weather for <em>' +
     u.query + '</em>', 99999);
   $.ajax({
     type: 'GET',
     url: '/api',
     data:{
       request: 'current',
-      locationQuery: u.query,
       latitude: u.lat,
       longitude: u.lng
     },
     dataType: "json"
   }).done(function(data){
     hideAlert();
-    document.getElementById('results').innerHTML =
+    if (data.error) {
+      alertUser(data.error);
+    }
+    showResults(
       '<p>Weather right now in <em>' + u.query + '</em>:</p>' +
       '<ul>' +
         '<li><strong>' + data.summary + '</strong></li>' +
@@ -110,13 +128,11 @@ function getCurrentWeather(){
         '<li>' + (data.humidity*100) + '% Humidity</li>' +
       '</ul>' +
       '<div style="text-align:center;">' +
-        '<a onclick="getHistorialWeather();">' +
+        '<a onclick="getHistorialWeather();return false;">' +
           'Get Historical Data' +
         '</a>' +
-      '</div>';
-    document.getElementById('locationQuery').select();
+      '</div>');
   });
-  return;
 }
 
 
@@ -127,14 +143,13 @@ function getCurrentWeather(){
  */
 function getHistorialWeather(){
   var dateStart = new Date(Date.parse(prompt('Enter the start date:  \n\n' +
-    '(MM-DD-YY or any format you wish)', u.dstart)));
+    '(mm/d/yyyy format, many others work too)', u.dstart)));
   if (dateStart=='' || !isValidDate(dateStart)){
     alertUser('<strong>Error:</strong> Bad date format', 1000);
     return;
   }
-  var dateEnd = new Date(Date.parse(prompt('Enter the end date:  \n\n' +
-    'Limit 30 day span\n\n' +
-    '(Start date:  ' + properDate(dateStart) + ')', u.dend)));
+  var dateEnd = new Date(Date.parse(prompt('Enter the end date: \n\n' +
+    'Start date:  ' + properDate(dateStart), u.dend)));
   if (dateEnd=='' || !isValidDate(dateEnd)){
     alertUser('<strong>Error:</strong> Bad date format', 1000);
     return;
@@ -147,14 +162,14 @@ function getHistorialWeather(){
   u.dstart = properDate(dateStart);
   u.dend = properDate(dateEnd);
   // After validation, make ajax request
-  alertUser('<span class="load"></span>Getting weather data for <em>' +
-    document.getElementById('locationQuery').value + '</em>', 99999);
+  alertUser('<span class="load"></span>Getting weather history for <em>' +
+    u.query + '</em>', 99999);
   $.ajax({
     type: 'GET',
     url: '/api',
     data:{
       request: 'historical',
-      locationQuery: u.query,
+      //locationQuery: u.query,
       dateStart: u.dstart,
       dateEnd: u.dend,
       latitude: u.lat,
@@ -163,26 +178,28 @@ function getHistorialWeather(){
     dataType: "json"
   }).done(function(data){
     hideAlert();
-    document.getElementById('results').innerHTML =
+    if(data.error){
+      alertUser(data.error);
+    }
+    showResults(
       '<p>Weather between <em>' + u.dstart + '</em> and <em>' +
         u.dend + '</em> in <em>' + u.query + '</em>:</p>' +
       '<ul>' +
-        '<li><strong>' + data.percent_sunny + '</strong> Sunny Days ' +
-        'during this period</li>' +
-        '<li>Temperature Profile:' +
-          '<img src="' + data.temp_map + '">' +
-        '</li>' +
-        '<li>Rainfall Snapshot:' +
+        '<li>Sunny days:  <strong>' + data.percent_sunny + '</strong>' +
+          '<img src="' + data.sun_map + '"></li>' +
+        '<li>Rainy days:  <strong>' + data.percent_rainy + '</strong>' +
           '<img src="' + data.rain_map + '">' +
         '</li>' +
-        '<li>...</li>' +
+        '<li>Temperature:' +
+          '<img src="' + data.temp_map + '"><span>(average, &deg;F)</span>' +
+        '</li>' +
+        '<li></li>' +
       '</ul>' +
-      '<div style="text-align:center;">' +
-        '<a onclick="getHistorialWeather();">' +
+      '<div>' +
+        '<a onclick="getHistorialWeather();return false;">' +
           'Get Historical Data' +
         '</a>' +
-      '</div>';
-      document.getElementById('locationQuery').select();
+      '</div>');
   });
   return;
 }
@@ -210,17 +227,17 @@ function findCoordsForLocation(){
   }).done(function(data){
     hideAlert();
     if (data.status == 'OK'){
+      // Store the formatted address that google found instead
       u.query = data.results[0].formatted_address;
       document.getElementById('locationQuery').value = u.query;
       u.lat = data.results[0].geometry.location.lat;
       u.lng = data.results[0].geometry.location.lng;
       getCurrentWeather();
     }else{
-      alertUser('<strong>Error:</strong> Location not found <em>' +
+      alertUser('<strong>Error:</strong> Location not found, <em>' +
         u.query + '</em>');
     }
   });
-  return;
 }
 
 
@@ -265,7 +282,6 @@ function alertUser(msg, timeout){
   setTimeout(function(){
     hideAlert();
   }, timeout);
-  return;
 }
 
 
@@ -276,5 +292,19 @@ function alertUser(msg, timeout){
  */
 function hideAlert(){
   document.getElementById('mask').style.display = 'none';
-  return;
+}
+
+
+/**
+ * Show ajax results to user
+ *
+ * TODO:  Add fancy effects upon update
+ *
+ * @param  {[type]} html [description]
+ * @return {[type]}      [description]
+ */
+function showResults(html){
+  document.getElementById('results').innerHTML = html;
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('locationQuery').select();
 }

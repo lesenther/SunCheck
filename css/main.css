@@ -67,6 +67,7 @@ textarea {
     position: fixed;
     top: 0;
     left: 0;
+    overflow: auto;
 }
 
 header h1 {
@@ -88,6 +89,7 @@ footer {
     bottom: 0;
     width: 100%;
     font-size: 12px;
+    text-align: center;
 }
 
 section#content {
@@ -95,18 +97,26 @@ section#content {
 }
 
 #results {
+    padding: 6px 10px;
     margin: 20px;
-    padding: 10px;
     font-size: 14px;
-    background: #bdf;
+    background: rgba(255, 255, 255, 0.2);
     text-align: left;
+    display: none;
+    position: relative;
     -webkit-border-radius: 4;
     -moz-border-radius: 4;
     border-radius: 4px;
+    overflow: visible;
 }
 
 #results p {
     margin: 0;
+    max-width: 600px;
+}
+
+#results div {
+    text-align:center;
 }
 
 #results ul {
@@ -115,6 +125,7 @@ section#content {
     padding: 2px 4px;
     list-style-type: none;
     margin-bottom: 20px;
+    clear: right;
 }
 
 #results ul li {
@@ -131,6 +142,13 @@ section#content {
 
 #results ul li img {
     float:  right;
+}
+
+#results ul li span {
+    font-size: 10px;
+    display: block;
+    margin-left: 8px;
+    color: #555;
 }
 
 #results a {
