@@ -13,6 +13,7 @@ error_reporting(-1);
  **/
 
 $apiKey = '5f0b624e922d6c1082480617cc2a3767';  // Reset key if compromised!!!
+
 $request = isset($_GET['request']) ? $_GET['request'] : false;
 $latitude = isset($_GET['latitude']) ? $_GET['latitude'] : false;
 $longitude = isset($_GET['longitude']) ? $_GET['longitude'] : false;
@@ -40,10 +41,14 @@ switch ($request) {
     );
 
     $dayCount=0;
-    $tempMap='';
-    $rainMap='';
+    $temps=array();
+    $rain=array();
     $daysSunny=0;
     foreach($dateRange as $date){
+      if($dayCount>=30){
+        $error = '30 day span limit';
+        break;
+      }
       $weather = json_decode(file_get_contents('https://api.forecast.io/forecast/'.$apiKey.'/'.$latitude.','.$longitude.','.$date->getTimestamp().'?units=us&lang=en&exclude=minutely,hourly,currently'));
       $dailyWeather = $weather->daily->data[0];
       if($dailyWeather->icon=='clear-day'){
@@ -51,8 +56,10 @@ switch ($request) {
       }
       $dayCount++;
       $averageTemperature = $dailyWeather->temperatureMin + ($dailyWeather->temperatureMax - $dailyWeather->temperatureMin)/2;
-      $tempMap .= '<span style="background-color:'.($averageTemperature).';">&nbsp;</span>';
-      $rainMap .= '<span style="background-color:rgb('.($dailyWeather->icon == 'rain' ? '100,100,255' : '255,255,255').');">&nbsp;</span>';
+      $temps[$dayCount] = round($averageTemperature);
+      $temps_min[$dayCount] = $dailyWeather->temperatureMin;
+      $temps_max[$dayCount] = $dailyWeather->temperatureMax;
+      $rain[$dayCount] = ($dailyWeather->icon=='rain') ? 1 : 0;
     }
     $percentSunny = number_format($daysSunny/$dayCount*100).'%';
 
@@ -62,8 +69,9 @@ switch ($request) {
         'total_days' => $dayCount,
         'average_temperature' => $averageTemperature,
         'percent_sunny' => $percentSunny,
-        'temp_map' => $tempMap,
-        'rain_map' => $rainMap,
+        'temp_map' => 'http://chart.googleapis.com/chart?cht=lc&chs=400x100&chd=t:'.implode(',', $temps).'|'.implode(',', $temps_min).'|'.implode(',', $temps_max).'&chxt=y&chxr=0,'.min($temps).','.max($temps).''.'&chf=bg,s,FFFFFF00&chco=3366CC&chma=30,0,0,0',
+        'rain_map' => 'http://chart.googleapis.com/chart?cht=bvg:nda&chs=400x30&chd=t:'.implode(',', $rain).'&chf=bg,s,FFFFFF00&chco=3366CC|6688FF|0033AA&chma=30,0,0,0',
+        'error' => isset($error) ? $error : '',
         'other' => 'bleh'
       )
     );

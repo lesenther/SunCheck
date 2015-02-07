@@ -128,13 +128,14 @@ function getHistorialWeather(){
   var dateStart = new Date(Date.parse(prompt('Enter the start date:  \n\n' +
     '(MM-DD-YY or any format you wish)', u.dstart)));
   if (dateStart=='' || !isValidDate(dateStart)){
-    alertUser('<strong>Error:</strong> Bad start date format');
+    alertUser('<strong>Error:</strong> Bad date format', 1000);
     return;
   }
   var dateEnd = new Date(Date.parse(prompt('Enter the end date:  \n\n' +
-    '(MM-DD-YY or any format you wish)', u.dend)));
+    'Limit 30 day span\n\n' +
+    '(Start date:  ' + properDate(dateStart) + ')', u.dend)));
   if (dateEnd=='' || !isValidDate(dateEnd)){
-    alertUser('<strong>Error:</strong> Bad end date format');
+    alertUser('<strong>Error:</strong> Bad date format', 1000);
     return;
   }
   if(dateStart > dateEnd){ // Swap dates if the user enters them backwards
@@ -144,9 +145,10 @@ function getHistorialWeather(){
   }
   u.dstart = properDate(dateStart);
   u.dend = properDate(dateEnd);
-  // After basic validation, make ajax request
+  // After validation, make ajax request
   alertUser('<span class="load"></span>Getting weather data for <em>' +
-    document.getElementById('locationQuery').value + '</em>', 99999);
+    document.getElementById('locationQuery').value + '</em><br>' +
+    '(Depending on the range, this may time some time)', 99999);
   $.ajax({
     type: 'GET',
     url: '/api',
@@ -165,13 +167,13 @@ function getHistorialWeather(){
       '<p>Weather between <em>' + u.dstart + '</em> and <em>' +
         u.dend + '</em> in <em>' + u.query + '</em>:</p>' +
       '<ul>' +
-        '<li><strong>' + data.percent_sunny + '</strong> of the days during ' +
-        'this period were sunny</li>' +
-        '<li>Temperature Map:  <br>' +
-          '<div id="temperatureMap"><img src="' + data.temp_map + '"></div>' +
+        '<li><strong>' + data.percent_sunny + '</strong> Sunny Days ' +
+        'during this period</li>' +
+        '<li>Temperature Profile:' +
+          '<img src="' + data.temp_map + '">' +
         '</li>' +
-        '<li>Rainfall Map:  <br>' +
-          '<div id="rainFallMap"><img src="' + data.rain_map + '"></div>' +
+        '<li>Rainfall Snapshot:' +
+          '<img src="' + data.rain_map + '">' +
         '</li>' +
         '<li>...</li>' +
       '</ul>' +
@@ -193,6 +195,8 @@ function getHistorialWeather(){
  * @return {[type]}               [description]
  */
 function findCoordsForLocation(){
+  if(document.getElementById('locationQuery').value=='')
+    return;
   u.query = document.getElementById('locationQuery').value;
   if (!u.query){
     alertUser('<strong>Error:</strong> Bad input parameter <em>' +

@@ -113,6 +113,13 @@ section#content {
     margin: 10px;
     padding: 2px 4px;
     list-style-type: none;
+    margin-bottom: 20px;
+}
+
+#results ul li {
+    clear: right;
+    margin-bottom: 4px;
+    border-bottom: 1px solid #cef;
 }
 
 #results ul li.temp {
@@ -120,6 +127,13 @@ section#content {
     position: absolute;
     right: 0;
     top: 0;
+    border: 0;
+    background-color: #bdf;
+    padding: 10px 20px;
+}
+
+#results ul li img {
+    float:  right;
 }
 
 #results a {
@@ -129,21 +143,7 @@ section#content {
 }
 
 #results a:hover {
-    color: #fff;
-}
-
-#rainFallMap, #temperatureMap {
-    display: inline-block;
-    width: auto;
-    height: 10px;
-    outline: 1px solid black;
-}
-
-#rainFallMap span,
-#temperatureMap span {
-    display: inline-block;
-    height: 10px;
-    width: 10px;
+    color: #36f;
 }
 
 #mask {
