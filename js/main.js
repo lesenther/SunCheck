@@ -15,7 +15,6 @@ var u = {
  */
 function initialize(){
   getUserLocation();
-  return;
 }
 
 
@@ -57,12 +56,10 @@ function getUserLocation(){
             getCurrentWeather();
           } else {
             alertUser("Location could not be found");
-            document.getElementById('locationQuery').select();
             return;
           }
         } else {
           alertUser("Geocoder failed: <em>" + status + '</em>');
-            document.getElementById('locationQuery').select();
           return;
         }
       });
@@ -81,11 +78,9 @@ function getUserLocation(){
           alertUser('<strong>Error:</strong> An unknown error occurred.');
           break;
       }
-      document.getElementById('locationQuery').focus();
     });
   } else {
     alertUser('Geolocation is not supported by this browser.');
-    document.getElementById('locationQuery').select();
   }
 }
 
@@ -118,14 +113,14 @@ function getCurrentWeather() {
   }).done(function(data){
     hideAlert();
     if (data.error) {
-      alertUser(data.error);
+      alertUser('<strong>Error:</strong> ' + data.error);
     }
     showResults(
       '<p>Weather right now in <em>' + u.query + '</em>:</p>' +
       '<ul>' +
         '<li><strong>' + data.summary + '</strong></li>' +
         '<li class="temp">' + Math.floor(data.temperature) + ' &deg;F</li>' +
-        '<li>' + (data.humidity*100) + '% Humidity</li>' +
+        '<li>' + Math.round(data.humidity*100) + '% Humidity</li>' +
       '</ul>' +
       '<div style="text-align:center;">' +
         '<a onclick="getHistorialWeather();return false;">' +
@@ -143,24 +138,40 @@ function getCurrentWeather() {
  */
 function getHistorialWeather(){
   var dateStart = new Date(Date.parse(prompt('Enter the start date:  \n\n' +
-    '(mm/d/yyyy format, many others work too)', u.dstart)));
-  if (dateStart=='' || !isValidDate(dateStart)){
-    alertUser('<strong>Error:</strong> Bad date format', 1000);
+    '(mm/d/yyyy or any date string format)', u.dstart)));
+  if (dateStart=='' || !isValidDate(dateStart)) {
+    alertUser('<strong>Error:</strong> Bad date format, <em>' + dateStart +
+      '</em>', 1000);
     return;
   }
-  var dateEnd = new Date(Date.parse(prompt('Enter the end date: \n\n' +
-    'Start date:  ' + properDate(dateStart), u.dend)));
-  if (dateEnd=='' || !isValidDate(dateEnd)){
-    alertUser('<strong>Error:</strong> Bad date format', 1000);
+
+  var dateEnd = new Date(Date.parse(prompt('Enter the end date:  \n\n' +
+    'Must be within 30 days of ' + properDate(dateStart), u.dend)));
+  if (dateEnd=='' || !isValidDate(dateEnd)) {
+    alertUser('<strong>Error:</strong> Bad date format, <em>' + dateEnd +
+      '</em>', 1000);
     return;
   }
-  if(dateStart > dateEnd){ // Swap dates if the user enters them backwards
-    var temp = dateStart;
+
+  // Swap dates if the user enters them backwards
+  if (dateStart > dateEnd) {
+    temp = dateStart;
     dateStart = dateEnd;
     dateEnd = temp;
+    delete temp;
   }
+
+  // Check 30 day limit
+  if (dateEnd - dateStart > 1000 * 60 * 60 * 24 * 30) {
+    alertUser('<strong>Error:</strong> Date range is currently limited to ' +
+      '30 days due to third-party API restrictions.  Please try again.', 4000);
+    return;
+  }
+
+  // Dates should be good, store them in the u object
   u.dstart = properDate(dateStart);
   u.dend = properDate(dateEnd);
+
   // After validation, make ajax request
   alertUser('<span class="load"></span>Getting weather history for <em>' +
     u.query + '</em>', 99999);
@@ -169,17 +180,16 @@ function getHistorialWeather(){
     url: '/api',
     data:{
       request: 'historical',
-      //locationQuery: u.query,
-      dateStart: u.dstart,
-      dateEnd: u.dend,
       latitude: u.lat,
-      longitude: u.lng
+      longitude: u.lng,
+      dateStart: u.dstart,
+      dateEnd: u.dend
     },
     dataType: "json"
   }).done(function(data){
     hideAlert();
-    if(data.error){
-      alertUser(data.error);
+    if (data.error) {
+      alertUser('<strong>Error:</strong> ' + data.error);
     }
     showResults(
       '<p>Weather between <em>' + u.dstart + '</em> and <em>' +
@@ -201,7 +211,6 @@ function getHistorialWeather(){
         '</a>' +
       '</div>');
   });
-  return;
 }
 
 
@@ -212,7 +221,7 @@ function getHistorialWeather(){
  * @return {[type]}               [description]
  */
 function findCoordsForLocation(){
-  if(document.getElementById('locationQuery').value=='')
+  if (document.getElementById('locationQuery').value=='')
     return;
   u.query = document.getElementById('locationQuery').value;
   alertUser('<span class="load"></span>Getting coordinates for <em>' +
@@ -281,6 +290,7 @@ function alertUser(msg, timeout){
   document.getElementById('mask').style.display = 'block';
   setTimeout(function(){
     hideAlert();
+    document.getElementById('locationQuery').select();
   }, timeout);
 }
 
@@ -297,8 +307,6 @@ function hideAlert(){
 
 /**
  * Show ajax results to user
- *
- * TODO:  Add fancy effects upon update
  *
  * @param  {[type]} html [description]
  * @return {[type]}      [description]

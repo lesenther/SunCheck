@@ -29,6 +29,7 @@ if (!$request || !$latitude || !$longitude) {
 }
 
 switch ($request) {
+
   case 'current':
     $weather = json_decode(
       file_get_contents(
@@ -74,7 +75,8 @@ switch ($request) {
       $dailyWeather = $weather->daily->data[0];
 
       // Determine if sunny / rainy
-      $sunMap[$dayCount] = ( isset($dailyWeather->cloudCover) // For some locations, cloudCover is undefined
+      // Note: For some locations, cloudCover is undefined
+      $sunMap[$dayCount] = ( isset($dailyWeather->cloudCover)
         && $dailyWeather->cloudCover < 0.1 ) ? 100 : 0;
       $rainMap[$dayCount] = ( isset($dailyWeather->precipIntensity)
         && $dailyWeather->precipIntensity > 0 ) ? 100 : 0;
@@ -88,7 +90,6 @@ switch ($request) {
         'total_days' => $dayCount,
         'percent_sunny' => number_format(array_sum($sunMap)/count($sunMap)).'%',
         'percent_rainy' => number_format(array_sum($rainMap)/count($rainMap)).'%',
-
         // See:  https://developers.google.com/chart/image/
         'temp_map' => 'http://chart.googleapis.com/chart'.
           '?cht=lc'. // Line chart
@@ -102,7 +103,6 @@ switch ($request) {
           '&chco=6688FF'. // line colors
           '&chma=30,0,0,0'. // margins
           '',
-
         'rain_map' => 'http://chart.googleapis.com/chart'.
           '?cht=bvg:nda'. // bar chart
           '&chs=400x20'. // size
@@ -122,7 +122,6 @@ switch ($request) {
           '&chma=30,0,0,0'. // margins
           '&chbh=a'. // bar width
           '',
-
         // TODO:  Show map?  https://developers.google.com/maps/documentation/staticmaps/
         'location_map' =>
           'http://maps.googleapis.com/maps/api/staticmap?center='.$latitude.
@@ -136,7 +135,7 @@ switch ($request) {
   default:
     echo json_encode(
       array(
-        'error' => '<strong>Error:</strong> Bad request, <em>'.$request.'</em>'
+        'error' => 'Bad request, <em>'.$request.'</em>'
       )
     );
     break;
