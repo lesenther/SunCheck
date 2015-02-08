@@ -32,7 +32,7 @@ function initialize(){
  */
 function getUserLocation(){
   if (navigator.geolocation) {
-    alertUser('<span class="load"></span>Getting your location', 99999);
+    alertUser('<span class="load"></span>Getting your location', -1);
     var geocoder = new google.maps.Geocoder();
     navigator.geolocation.getCurrentPosition(function(pos){
       u.lat = pos.coords.latitude;
@@ -100,7 +100,7 @@ function getCurrentWeather() {
     return;
   }
   alertUser('<span class="load"></span>Getting weather for <em>' +
-    u.query + '</em>', 99999);
+    u.query + '</em>', -1);
   $.ajax({
     type: 'GET',
     url: '/api',
@@ -174,7 +174,7 @@ function getHistorialWeather(){
 
   // After validation, make ajax request
   alertUser('<span class="load"></span>Getting weather history for <em>' +
-    u.query + '</em>', 99999);
+    u.query + '</em>', -1);
   $.ajax({
     type: 'GET',
     url: '/api',
@@ -225,7 +225,7 @@ function findCoordsForLocation(){
     return;
   u.query = document.getElementById('locationQuery').value;
   alertUser('<span class="load"></span>Getting coordinates for <em>' +
-    u.query + '</em>', 99999);
+    u.query + '</em>', -1);
   $.ajax({
     type: 'GET',
     url: 'https://maps.googleapis.com/maps/api/geocode/json',
@@ -288,6 +288,8 @@ function alertUser(msg, timeout){
   timeout = (timeout==undefined) ? 2000 : timeout;
   document.getElementById('notice').innerHTML = msg;
   document.getElementById('mask').style.display = 'block';
+  if (timeout < 0)
+    return;
   setTimeout(function(){
     hideAlert();
     document.getElementById('locationQuery').select();

@@ -151,16 +151,6 @@ section#content {
     color: #555;
 }
 
-#results a {
-    text-decoration: underline;
-    color: #039;
-    cursor: pointer;
-}
-
-#results a:hover {
-    color: #36f;
-}
-
 #mask {
     position: fixed;
     height: 100%;
@@ -252,7 +242,6 @@ input[type="submit"] {
     text-decoration: none;
 }
 
-
 input[type="submit"]:hover {
     background: #3cb0fd;
     background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
@@ -263,17 +252,16 @@ input[type="submit"]:hover {
     text-decoration: none;
 }
 
-button {
-    font-size: 14px;border-width: 1px;
-    outline: 0;
-    -webkit-border-radius: 4;
-    -moz-border-radius: 4;
-    border-radius: 4px;
+a {
+    text-decoration: underline;
+    color: #039;
+    cursor: pointer;
 }
 
-button:hover {
-
+a:hover {
+    color: #36f;
 }
+
 
 /* ==========================================================================
    Media Queries

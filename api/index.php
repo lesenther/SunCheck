@@ -60,7 +60,7 @@ switch ($request) {
 
     // Loop through each day and get info to build statistics
     foreach ($dateRange as $date) {
-      if ($dayCount >= 30) {
+      if ($dayCount > 30) {
         $error = '30 day limit';
         break;
       }
