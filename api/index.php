@@ -108,7 +108,7 @@ switch ($request) {
           '&chs=400x20'. // size
           '&chd=t:'.implode(',', $rainMap). // data
           '&chf=bg,s,FFFFFF00'. // transparent back
-          '&chco=3366CC'. // bar color
+          '&chco=90C0F0'. // bar color
           '&chma=30,0,0,0'. // margins
           '&chbh=a'. // bar width
           '',
@@ -118,7 +118,7 @@ switch ($request) {
           '&chs=400x20'. // size
           '&chd=t:'.implode(',', $sunMap). // data
           '&chf=bg,s,FFFFFF00'. // transparent back
-          '&chco=CCAA33'. // bar color
+          '&chco=F0C090'. // bar color
           '&chma=30,0,0,0'. // margins
           '&chbh=a'. // bar width
           '',

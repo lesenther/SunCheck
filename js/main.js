@@ -138,7 +138,7 @@ function getCurrentWeather() {
  */
 function getHistorialWeather(){
   var dateStart = new Date(Date.parse(prompt('Enter the start date:  \n\n' +
-    '(mm/d/yyyy or any date string format)', u.dstart)));
+    '(MM/DD/YYYY or any date string format)', u.dstart)));
   if (dateStart=='' || !isValidDate(dateStart)) {
     alertUser('<strong>Error:</strong> Bad date format, <em>' + dateStart +
       '</em>', 1000);
