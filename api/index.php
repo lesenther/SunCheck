@@ -8,43 +8,86 @@
  **/
 
 /* // Debugging
-ini_set('display_errors',1);
-ini_set('display_startup_errors',1);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 error_reporting(-1);
 //*/
 
-$apiKey = '5f0b624e922d6c1082480617cc2a3767';  // Reset key if compromised!!!
+$apiKey = '5f0b624e922d6c1082480617cc2a3767';  // Reset key if compromised!
 
 $request   = isset($_GET['request'])   ? $_GET['request']   : false;
 $latitude  = isset($_GET['latitude'])  ? $_GET['latitude']  : false;
 $longitude = isset($_GET['longitude']) ? $_GET['longitude'] : false;
 
-if (!$request || !$latitude || !$longitude) {
-  echo json_encode(
-    array(
-      'error' => 'Missing parameter:  ' . print_r($_GET, true)
+// Check required input parameters ara valid
+if (
+  !$request || !$latitude || !$longitude  // Params not empty
+    ||
+  $latitude > 90 || $latitude < -90 // lat is within valid range
+    ||
+  $longitude > 180 || $longitude < -180 // long is within valid range
+) {
+  exit(
+    json_encode(
+      array(
+        'error' => 'Bad parameter: ' .
+          str_replace(
+            "\n",
+            '<br>',
+            print_r($_GET, true)
+          )
+      )
     )
   );
-  exit();
 }
 
+
+//******************************************************************************
+// Process request
+//******************************************************************************
 switch ($request) {
 
+  //****************************************************************************
+  // Current weather
+  //****************************************************************************
   case 'current':
-    $weather = json_decode(
-      file_get_contents(
-        'https://api.forecast.io/forecast/'.$apiKey.'/'.
-          $latitude.','.$longitude.'?units=us&lang=en'
+    // No further parameter validation is required
+    $weather =
+      json_decode(
+        file_get_contents(
+          'https://api.forecast.io/forecast/'.$apiKey.'/'.
+            $latitude.','.$longitude.'?units=us&lang=en'
+        )
+      );
+    exit(
+      json_encode(
+        $weather->currently
       )
     );
-    echo json_encode($weather->currently);
     break;
 
+
+  //****************************************************************************
+  // Historical weather
+  //****************************************************************************
   case 'historical':
-    $dateStart = isset($_GET['dateStart']) ?
-      new DateTime(urldecode($_GET['dateStart'])) : false;
-    $dateEnd   = isset($_GET['dateEnd'])   ?
-      new DateTime(urldecode($_GET['dateEnd']))   : false;
+
+    // Validate date inputs
+    try {
+      $dateStart = isset($_GET['dateStart']) ?
+        new DateTime(urldecode($_GET['dateStart'])) : false;
+      $dateEnd   = isset($_GET['dateEnd'])   ?
+        new DateTime(urldecode($_GET['dateEnd']))   : false;
+    } catch (Exception $e) {
+      exit(
+        json_encode(
+          array(
+            'error' => 'Bad date parameter, ' . json_encode($_GET) . '<br>' .
+            ' (Exception: ' . $e .')'
+          )
+        )
+      );
+    }
     $dateEnd->modify('+1 day');  // Increment last day before creating range
 
     $dateRange = new DatePeriod(
@@ -53,10 +96,10 @@ switch ($request) {
       $dateEnd
     );
 
-    $dayCount=0;
-    $tempMap=array();
-    $rainMap=array();
-    $sunMap=array();
+    $dayCount = 0;
+    $tempMap = array();
+    $rainMap = array();
+    $sunMap = array();
 
     // Loop through each day and get info to build statistics
     foreach ($dateRange as $date) {
@@ -122,6 +165,7 @@ switch ($request) {
           '&chma=30,0,0,0'. // margins
           '&chbh=a'. // bar width
           '',
+
         // TODO:  Show map?  https://developers.google.com/maps/documentation/staticmaps/
         'location_map' =>
           'http://maps.googleapis.com/maps/api/staticmap?center='.$latitude.
@@ -132,10 +176,14 @@ switch ($request) {
     );
     break;
 
+
+  //****************************************************************************
+  // Historical weather
+  //****************************************************************************
   default:
     echo json_encode(
       array(
-        'error' => 'Bad request, <em>'.$request.'</em>'
+        'error' => 'Bad request, <em>' . $request . '</em>'
       )
     );
     break;

@@ -32,12 +32,10 @@ function initialize(){
  */
 function getUserLocation(){
   if (navigator.geolocation) {
-    alertUser('<span class="load"></span> ' +
-      'Waiting on you to accept or block geolocation..', -1);
+    alertUser('<span class="load"></span>' +
+      'Getting your current location..', -1);
     var geocoder = new google.maps.Geocoder();
     navigator.geolocation.getCurrentPosition(function(pos){
-      alertUser('<span class="load"></span>' +
-        'Getting your current location..', -1);
       u.lat = pos.coords.latitude;
       u.lng = pos.coords.longitude;
       var latlng = new google.maps.LatLng(u.lat, u.lng);
@@ -115,15 +113,21 @@ function getCurrentWeather() {
     dataType: "json"
   }).done(function(data){
     hideAlert();
-    if (data.error) {
+    if (typeof data.error != undefined) {
       alertUser('<strong>Error:</strong> ' + data.error);
     }
+    document.getElementById('results').style.background =
+      'url(\'http://maps.googleapis.com/maps/api/staticmap?center=' +
+        u.lat + ', ' + u.lng + '&zoom=11&size=800x200&sensor=false' +
+        '&maptype=terrain&style=element:labels|visibility:off\')';
+    document.getElementById('results').style.height = '200';
+
     showResults(
       '<p>Weather right now in <em>' + u.query + '</em>:</p>' +
       '<ul>' +
         '<li><strong>' + data.summary + '</strong></li>' +
         '<li class="temp">' + Math.floor(data.temperature) + ' &deg;F</li>' +
-        '<li>' + Math.round(data.humidity*100) + '% Humidity</li>' +
+        '<li>' + Math.round(data.humidity * 100) + '% Humidity</li>' +
       '</ul>' +
       '<div style="text-align:center;">' +
         '<a onclick="getUserDates();return false;">' +
@@ -193,8 +197,8 @@ function getHistorialWeather(){
   u.dend = properDate(dateEnd);
 
   // After validation, make ajax request
-  alertUser('<span class="load"></span>Getting weather history for <em>' +
-    u.query + '</em>', -1);
+  alertUser('<span class="load"></span>Getting historical weather data for ' +
+    '<em>' + u.query + '</em>', -1);
   $.ajax({
     type: 'GET',
     url: '/api',
@@ -211,6 +215,14 @@ function getHistorialWeather(){
     if (data.error) {
       alertUser('<strong>Error:</strong> ' + data.error);
     }
+
+    // Set map as background
+    document.getElementById('results').style.background =
+      'url(\'http://maps.googleapis.com/maps/api/staticmap?center=' +
+        u.lat + ', ' + u.lng + '&zoom=11&size=800x800&sensor=false' +
+        '&maptype=terrain&style=element:labels|visibility:off\')';
+    document.getElementById('results').style.height = 'auto';
+
     showResults(
       '<p>Weather between <em>' + u.dstart + '</em> and <em>' +
         u.dend + '</em> in <em>' + u.query + '</em>:</p>' +
