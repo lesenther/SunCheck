@@ -123,13 +123,27 @@ function getCurrentWeather() {
         '<li>' + Math.round(data.humidity*100) + '% Humidity</li>' +
       '</ul>' +
       '<div style="text-align:center;">' +
-        '<a onclick="getHistorialWeather();return false;">' +
+        '<a onclick="getUserDates();return false;">' +
           'Get Historical Data' +
         '</a>' +
       '</div>');
   });
 }
 
+function getUserDates(){
+  alertUser('<label>Start date:</label>' +
+    '<input type="text" id="dateStart" value=""> <br />' +
+    '<label>Start End:</label>' +
+    '<input type="text" id="dateEnd" value=""><br />' +
+    '<button onclick="getHistorialWeather();">Get Weather</button>' +
+    '', -1);
+  $(function() {
+    $( "#dateStart" ).datepicker();
+    $( "#dateEnd").datepicker();
+  });
+
+  //getHistorialWeather();
+}
 
 /**
  * Gets weather data for a specified location across a range of dates
@@ -137,16 +151,19 @@ function getCurrentWeather() {
  * @return {[type]}     [description]
  */
 function getHistorialWeather(){
-  var dateStart = new Date(Date.parse(prompt('Enter the start date:  \n\n' +
-    '(MM/DD/YYYY or any date string format)', u.dstart)));
+
+  var dateStart = new Date(Date.parse(document.getElementById('dateStart').value));
+    //prompt('Enter the start date:  \n\n' +
+    //'(MM/DD/YYYY or any date string format)', u.dstart)));
   if (dateStart=='' || !isValidDate(dateStart)) {
     alertUser('<strong>Error:</strong> Bad date format, <em>' + dateStart +
       '</em>', 1000);
     return;
   }
 
-  var dateEnd = new Date(Date.parse(prompt('Enter the end date:  \n\n' +
-    'Must be within 30 days of ' + properDate(dateStart), u.dend)));
+  var dateEnd = new Date(Date.parse(document.getElementById('dateEnd').value));
+  //var dateEnd = new Date(Date.parse(prompt('Enter the end date:  \n\n' +
+    //'Must be within 30 days of ' + properDate(dateStart), u.dend)));
   if (dateEnd=='' || !isValidDate(dateEnd)) {
     alertUser('<strong>Error:</strong> Bad date format, <em>' + dateEnd +
       '</em>', 1000);
@@ -206,7 +223,7 @@ function getHistorialWeather(){
         '<li></li>' +
       '</ul>' +
       '<div>' +
-        '<a onclick="getHistorialWeather();return false;">' +
+        '<a onclick="getUserDates();return false;">' +
           'Get Historical Data' +
         '</a>' +
       '</div>');
