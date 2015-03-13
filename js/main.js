@@ -32,9 +32,12 @@ function initialize(){
  */
 function getUserLocation(){
   if (navigator.geolocation) {
-    alertUser('<span class="load"></span>Getting your location', -1);
+    alertUser('<span class="load"></span> ' +
+      'Waiting on you to accept or block geolocation..', -1);
     var geocoder = new google.maps.Geocoder();
     navigator.geolocation.getCurrentPosition(function(pos){
+      alertUser('<span class="load"></span>' +
+        'Getting your current location..', -1);
       u.lat = pos.coords.latitude;
       u.lng = pos.coords.longitude;
       var latlng = new google.maps.LatLng(u.lat, u.lng);
@@ -55,11 +58,11 @@ function getUserLocation(){
             hideAlert();
             getCurrentWeather();
           } else {
-            alertUser("Location could not be found");
+            alertUser("<strong>Error:</strong> Location could not be found");
             return;
           }
         } else {
-          alertUser("Geocoder failed: <em>" + status + '</em>');
+          alertUser("<strong>Error:</strong> Geocoder failed, <em>" + status + '</em>');
           return;
         }
       });

@@ -15,7 +15,7 @@
     <script src="js/vendor/modernizr-2.8.3.min.js"></script>
   </head>
 
-  <body onload="initialize();">
+  <body onload="initialize()">
     <div id="container">
       <table><tr><td>
         <header onclick="alertUser('Developed by <em>Logan Esenther</em> (le@berkeley.edu)',3000);">
@@ -24,7 +24,7 @@
           <p>Quick weather analytics</p>
         </header>
         <section id="content">
-          <input type="text" value="" id="locationQuery" placeholder="Enter location" onkeydown="if(event.keyCode==13){findCoordsForLocation();}">
+          <input type="text" value="" id="locationQuery" placeholder="Enter location" onkeydown="if(event.keyCode==13){findCoordsForLocation()}">
           <input type="submit" onclick="findCoordsForLocation();" value="Check">
           <div id="results"></div>
         </section>
