@@ -4,7 +4,8 @@ SunCheck
 A weather visualization app
 
 Spec
-=====
+-----
+
 Build an app that analyzes and displays weather information for one location.
  - The user’s current location is taken as the default. The user is allowed to override the default.
 
