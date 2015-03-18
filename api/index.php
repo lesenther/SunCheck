@@ -13,13 +13,13 @@ ini_set('display_startup_errors', 1);
 error_reporting(-1);
 //*/
 
-$apiKey = '5f0b624e922d6c1082480617cc2a3767';  // Reset key if compromised!
+define('API_KEY', '5f0b624e922d6c1082480617cc2a3767');  // Reset key if compromised!
 
 $request   = isset($_GET['request'])   ? $_GET['request']   : false;
 $latitude  = isset($_GET['latitude'])  ? $_GET['latitude']  : false;
 $longitude = isset($_GET['longitude']) ? $_GET['longitude'] : false;
 
-// Check required input parameters ara valid
+// Basic validation check for universally required params
 if (
   !$request || !$latitude || !$longitude  // Params not empty
     ||
@@ -27,18 +27,20 @@ if (
     ||
   $longitude > 180 || $longitude < -180 // long is within valid range
 ) {
-  exit(
-    json_encode(
-      array(
-        'error' => 'Bad parameter: ' .
-          str_replace(
-            "\n",
-            '<br>',
-            print_r($_GET, true)
-          )
-      )
+
+  echo json_encode(
+    array(
+      'error' => 'Bad parameter: ' .
+        str_replace(
+          "\n",
+          '<br>',
+          print_r($_GET, true)
+        )
     )
   );
+
+  exit();
+
 }
 
 
@@ -51,20 +53,19 @@ switch ($request) {
   // Current weather
   //****************************************************************************
   case 'current':
+
     // No further parameter validation is required
     $weather =
       json_decode(
         file_get_contents(
-          'https://api.forecast.io/forecast/'.$apiKey.'/'.
+          'https://api.forecast.io/forecast/'.API_KEY.'/'.
             $latitude.','.$longitude.'?units=us&lang=en'
         )
       );
-    exit(
-      json_encode(
-        $weather->currently
-      )
-    );
-    break;
+
+    echo json_encode($weather->currently);
+
+    exit();
 
 
   //****************************************************************************
@@ -79,14 +80,13 @@ switch ($request) {
       $dateEnd   = isset($_GET['dateEnd'])   ?
         new DateTime(urldecode($_GET['dateEnd']))   : false;
     } catch (Exception $e) {
-      exit(
-        json_encode(
-          array(
-            'error' => 'Bad date parameter, ' . json_encode($_GET) . '<br>' .
-            ' (Exception: ' . $e .')'
-          )
+      echo json_encode(
+        array(
+          'error' => 'Bad date parameter, ' . json_encode($_GET) . '<br>' .
+          ' (Exception: ' . $e .')'
         )
       );
+      exit();
     }
     $dateEnd->modify('+1 day');  // Increment last day before creating range
 
@@ -110,7 +110,7 @@ switch ($request) {
       $dayCount++;
       $weather = json_decode(
         file_get_contents(
-          'https://api.forecast.io/forecast/'.$apiKey.'/'.$latitude.','.
+          'https://api.forecast.io/forecast/'.API_KEY.'/'.$latitude.','.
             $longitude.','.$date->getTimestamp().
             '?units=us&lang=en&exclude=minutely,hourly,currently'
         )
@@ -178,7 +178,7 @@ switch ($request) {
 
 
   //****************************************************************************
-  // Historical weather
+  // Undefined request
   //****************************************************************************
   default:
     echo json_encode(
