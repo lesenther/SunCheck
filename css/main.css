@@ -8,7 +8,7 @@ html {
 }
 
 body {
-    background-color: #acf;
+    background-color: #afdfff;
 }
 
 ::-moz-selection {
@@ -122,9 +122,8 @@ section#content {
 
 #results div {
     text-align:center;
-    background: rgba(255, 255, 255, 0.6);
     position: absolute;
-    bottom: 0;
+    bottom: 10px;
     width: 100%;
 }
 
@@ -139,11 +138,19 @@ section#content {
 }
 
 #results ul li {
+    font-size: 18px;
     margin: 0;
     clear: right;
     margin-bottom: 4px;
    -webkit-text-stroke-width: 1px;
    -webkit-text-stroke-color: rgba(255, 255, 255, 0.2);
+}
+
+#results ul li.temp {
+     font-size: 36px;
+     position: absolute;
+     right: 10px;
+     top: 20px;
 }
 
 #results ul li.large {
@@ -168,7 +175,7 @@ section#content {
     top: 0;
     left: 0;
     display: none;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 235, 0.9);
 }
 
 #container table,
@@ -234,6 +241,7 @@ input#locationQuery {
     padding: 4px 6px;
 }
 
+button,
 input[type="submit"] {
     background: #3498db;
     background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
@@ -252,6 +260,11 @@ input[type="submit"] {
     text-decoration: none;
 }
 
+button{
+    font-size:12px;
+}
+
+button:hover,
 input[type="submit"]:hover {
     background: #3cb0fd;
     background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);

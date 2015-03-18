@@ -143,7 +143,7 @@ switch ($request) {
           '&chxr=1,'.(min($tempMap)-2).','.(max($tempMap)+2). // set y range
           '&chds='.(min($tempMap)-2).','.(max($tempMap)+2).
           '&chf=bg,s,FFFFFF00'. // transparent back
-          '&chco=6688FF'. // line colors
+          '&chco=000000'. // line colors
           '&chma=30,0,0,0'. // margins
           '',
         'rain_map' => 'http://chart.googleapis.com/chart'.
@@ -151,7 +151,7 @@ switch ($request) {
           '&chs=400x20'. // size
           '&chd=t:'.implode(',', $rainMap). // data
           '&chf=bg,s,FFFFFF00'. // transparent back
-          '&chco=90C0F0'. // bar color
+          '&chco=6060FF'. // bar color
           '&chma=30,0,0,0'. // margins
           '&chbh=a'. // bar width
           '',
@@ -161,7 +161,7 @@ switch ($request) {
           '&chs=400x20'. // size
           '&chd=t:'.implode(',', $sunMap). // data
           '&chf=bg,s,FFFFFF00'. // transparent back
-          '&chco=F0C090'. // bar color
+          '&chco=FFCC00'. // bar color
           '&chma=30,0,0,0'. // margins
           '&chbh=a'. // bar width
           '',

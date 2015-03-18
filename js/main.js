@@ -113,12 +113,12 @@ function getCurrentWeather() {
     dataType: "json"
   }).done(function(data){
     hideAlert();
-    if (typeof data.error != undefined) {
+    if (data.error) {
       alertUser('<strong>Error:</strong> ' + data.error);
     }
     document.getElementById('results').style.background =
       'url(\'http://maps.googleapis.com/maps/api/staticmap?center=' +
-        u.lat + ', ' + u.lng + '&zoom=11&size=800x200&sensor=false' +
+        u.lat + ', ' + u.lng + '&zoom=10&size=800x400&sensor=false' +
         '&maptype=terrain&style=element:labels|visibility:off\')';
     document.getElementById('results').style.height = '200';
 
@@ -129,28 +129,40 @@ function getCurrentWeather() {
         '<li class="temp">' + Math.floor(data.temperature) + ' &deg;F</li>' +
         '<li>' + Math.round(data.humidity * 100) + '% Humidity</li>' +
       '</ul>' +
-      '<div style="text-align:center;">' +
-        '<a onclick="getUserDates();return false;">' +
+      '<div>' +
+        '<button onclick="getUserDates();return false;">' +
           'Get Historical Data' +
-        '</a>' +
+        '</button>' +
       '</div>');
   });
 }
 
+
+/**
+ * Interface for capturing user dates with the datepicker control from jqueryui
+ *
+ * @return {[type]} [description]
+ */
 function getUserDates(){
-  alertUser('<label>Start date:</label>' +
-    '<input type="text" id="dateStart" value=""> <br />' +
-    '<label>Start End:</label>' +
-    '<input type="text" id="dateEnd" value=""><br />' +
-    '<button onclick="getHistorialWeather();">Get Weather</button>' +
+  alertUser(
+    '<h3>Historical Data:</h3>' +
+    '<label>Start date: </label>' +
+    '<input type="text" id="dateStart"><br>' +
+
+    '<label>End date: </label>' +
+    '<input type="text" id="dateEnd"><br><br>' +
+
+    '<button onclick="getHistorialWeather();" id="dateSubmit">' +
+      'Get Historical Weather' +
+    '</button>' +
     '', -1);
   $(function() {
     $( "#dateStart" ).datepicker();
     $( "#dateEnd").datepicker();
   });
-
-  //getHistorialWeather();
+  document.getElementById('dateStart').focus();
 }
+
 
 /**
  * Gets weather data for a specified location across a range of dates
@@ -238,9 +250,9 @@ function getHistorialWeather(){
         '<li></li>' +
       '</ul>' +
       '<div>' +
-        '<a onclick="getUserDates();return false;">' +
+        '<button onclick="getUserDates();return false;">' +
           'Get Historical Data' +
-        '</a>' +
+        '</button>' +
       '</div>');
   });
 }
