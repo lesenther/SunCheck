@@ -273,6 +273,9 @@ a:hover {
     color: #36f;
 }
 
+div.ui-datepicker{
+ font-size: 12px;
+}
 
 /* ==========================================================================
    Media Queries
