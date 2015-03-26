@@ -8,6 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="css/normalize.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
     <link href='http://fonts.googleapis.com/css?family=Shadows+Into+Light' rel='stylesheet' type='text/css'>
@@ -24,9 +26,15 @@
           <p>Quick weather analytics</p>
         </header>
         <section id="content">
-          <input type="text" value="" id="locationQuery" placeholder="Enter location" onkeydown="if(event.keyCode==13){findCoordsForLocation()}">
-          <input type="submit" onclick="findCoordsForLocation();" value="Check">
-          <div id="results"></div>
+          <div class="form-inline">
+            <div class="form-group">
+              <input type="text" value="" id="locationQuery" placeholder="Enter location" class="form-control" onkeydown="if(event.keyCode==13){findCoordsForLocation()}"><button type="submit" onclick="findCoordsForLocation();" class="btn btn-primary">Submit</button>
+            </div>
+          </div>
+          <div id="results-container">
+            <div id="results-bg"></div>
+            <div id="results"></div>
+          </div>
         </section>
       </td></tr></table>
       <footer>
@@ -38,12 +46,15 @@
       <table><tr><td>
         <div id="notice"></div>
       </td></tr></table>
-      <span class="close" onclick="hideAlert();">&times;</span>
+      <button type="button" class="close" onclick="hideAlert();" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
 
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>

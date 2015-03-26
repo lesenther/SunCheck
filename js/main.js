@@ -116,21 +116,20 @@ function getCurrentWeather() {
     if (data.error) {
       alertUser('<strong>Error:</strong> ' + data.error);
     }
-    document.getElementById('results').style.background =
+    document.getElementById('results-bg').style.background =
       'url(\'http://maps.googleapis.com/maps/api/staticmap?center=' +
         u.lat + ', ' + u.lng + '&zoom=10&size=800x400&sensor=false' +
         '&maptype=terrain&style=element:labels|visibility:off\')';
-    document.getElementById('results').style.height = '200';
 
     showResults(
-      '<p>Weather right now in <em>' + u.query + '</em>:</p>' +
+      '<p class="bg-primary">Weather right now in <em>' + u.query + '</em>:</p>' +
       '<ul>' +
         '<li><strong>' + data.summary + '</strong></li>' +
         '<li class="temp">' + Math.floor(data.temperature) + ' &deg;F</li>' +
         '<li>' + Math.round(data.humidity * 100) + '% Humidity</li>' +
       '</ul>' +
       '<div>' +
-        '<button onclick="getUserDates();return false;">' +
+        '<button type="button" onclick="getUserDates()" class="btn btn-default btn-xs">' +
           'Get Historical Data' +
         '</button>' +
       '</div>');
@@ -145,16 +144,20 @@ function getCurrentWeather() {
  */
 function getUserDates(){
   alertUser(
-    '<h3>Historical Data:</h3>' +
-    '<label>Start date: </label>' +
-    '<input type="text" id="dateStart"><br>' +
+    '<div class="dialog form-inline">' +
+      '<h4>Historical Date Range:</h4>' +
+      '<label for="dateStart">Start date:</label> ' +
+      '<input type="text" id="dateStart" placeholder="mm/dd/yyyy" value=u.dstart><br>' +
 
-    '<label>End date: </label>' +
-    '<input type="text" id="dateEnd"><br><br>' +
+      '<label for="dateEnd">End date:</label> ' +
+      '<input type="text" id="dateEnd" placeholder="mm/dd/yyyy" value=u.dend><br>' +
 
-    '<button onclick="getHistorialWeather();" id="dateSubmit">' +
-      'Get Historical Weather' +
-    '</button>' +
+      '<span>* Limited to 30-day span</span><br>' +
+
+      '<button type="button" onclick="getHistorialWeather()" id="dateSubmit" class="btn btn-default">' +
+        'Get Historical Weather' +
+      '</button>' +
+    '</div>' +
     '', -1);
   $(function() {
     $( "#dateStart" ).datepicker();
@@ -229,14 +232,13 @@ function getHistorialWeather(){
     }
 
     // Set map as background
-    document.getElementById('results').style.background =
+    document.getElementById('results-bg').style.background =
       'url(\'http://maps.googleapis.com/maps/api/staticmap?center=' +
         u.lat + ', ' + u.lng + '&zoom=11&size=800x800&sensor=false' +
         '&maptype=terrain&style=element:labels|visibility:off\')';
-    document.getElementById('results').style.height = 'auto';
 
     showResults(
-      '<p>Weather between <em>' + u.dstart + '</em> and <em>' +
+      '<p class="bg-primary">Weather between <em>' + u.dstart + '</em> and <em>' +
         u.dend + '</em> in <em>' + u.query + '</em>:</p>' +
       '<ul>' +
         '<li>Sunny days:  <strong>' + data.percent_sunny + '</strong>' +
@@ -247,10 +249,9 @@ function getHistorialWeather(){
         '<li>Temperature:' +
           '<img src="' + data.temp_map + '"><span>(average, &deg;F)</span>' +
         '</li>' +
-        '<li></li>' +
       '</ul>' +
-      '<div>' +
-        '<button onclick="getUserDates();return false;">' +
+      '<div class="clearfix">' +
+        '<button type="button" onclick="getUserDates()" class="btn btn-default btn-xs">' +
           'Get Historical Data' +
         '</button>' +
       '</div>');
