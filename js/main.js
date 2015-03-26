@@ -2,8 +2,8 @@ var u = {
   query: '',
   lat: '',
   lng: '',
-  dstart: '1/1/11',
-  dend: '1/11/11'
+  dstart: '01/01/2011',
+  dend: '01/11/2011'
 };
 
 
@@ -33,7 +33,8 @@ function initialize(){
 function getUserLocation(){
   if (navigator.geolocation) {
     alertUser('<span class="load"></span>' +
-      'Getting your current location..', -1);
+      'Getting your current location.. ' +
+      '', -1);
     var geocoder = new google.maps.Geocoder();
     navigator.geolocation.getCurrentPosition(function(pos){
       u.lat = pos.coords.latitude;
@@ -47,9 +48,11 @@ function getUserLocation(){
             var arrAddress = results[0].address_components;
             for (ac = 0; ac < arrAddress.length; ac++) {
               city = (arrAddress[ac].types[0] == "locality")
-                ? arrAddress[ac].long_name : city;
+                ? arrAddress[ac].long_name
+                : city;
               state = (arrAddress[ac].types[0] == "administrative_area_level_1")
-                ? arrAddress[ac].short_name : state;
+                ? arrAddress[ac].short_name
+                : state;
             }
             u.query = city + ', ' + state;
             document.getElementById('locationQuery').value = u.query;
@@ -145,18 +148,17 @@ function getCurrentWeather() {
 function getUserDates(){
   alertUser(
     '<div class="dialog form-inline">' +
-      '<h4>Historical Date Range:</h4>' +
-      '<label for="dateStart">Start date:</label> ' +
-      '<input type="text" id="dateStart" placeholder="mm/dd/yyyy" value=u.dstart><br>' +
-
-      '<label for="dateEnd">End date:</label> ' +
-      '<input type="text" id="dateEnd" placeholder="mm/dd/yyyy" value=u.dend><br>' +
-
-      '<span>* Limited to 30-day span</span><br>' +
-
-      '<button type="button" onclick="getHistorialWeather()" id="dateSubmit" class="btn btn-default">' +
-        'Get Historical Weather' +
-      '</button>' +
+      '<div class="form-group">' +
+        '<h4>Historical Date Range:</h4>' +
+        '<label for="dateStart">Start date:</label> ' +
+        '<input type="text" id="dateStart" placeholder="mm/dd/yyyy" onfocus="if(this.value==\'\')this.value=u.dstart" class="form-control"><br>' +
+        '<label for="dateEnd">End date:</label> ' +
+        '<input type="text" id="dateEnd" placeholder="mm/dd/yyyy" onfocus="if(this.value==\'\')this.value=u.dend" class="form-control"><br>' +
+        '<span>* Limited to 30-day span</span><br>' +
+        '<button type="button" onclick="getHistorialWeather()" id="dateSubmit" class="btn btn-primary">' +
+          'Get Historical Weather' +
+        '</button>' +
+      '</div>' +
     '</div>' +
     '', -1);
   $(function() {
@@ -204,6 +206,11 @@ function getHistorialWeather(){
   if (dateEnd - dateStart > 1000 * 60 * 60 * 24 * 30) {
     alertUser('<strong>Error:</strong> Date range is currently limited to ' +
       '30 days due to third-party API restrictions.  Please try again.', 4000);
+    setTimeout(
+      function(){
+        getUserDates()
+      },
+      4000);
     return;
   }
 
@@ -249,8 +256,10 @@ function getHistorialWeather(){
         '<li>Temperature:' +
           '<img src="' + data.temp_map + '"><span>(average, &deg;F)</span>' +
         '</li>' +
+        '<li></li>' +
       '</ul>' +
-      '<div class="clearfix">' +
+      '<div class="clearfix"></div>' +
+      '<div>' +
         '<button type="button" onclick="getUserDates()" class="btn btn-default btn-xs">' +
           'Get Historical Data' +
         '</button>' +
